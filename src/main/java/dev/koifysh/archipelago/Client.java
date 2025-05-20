@@ -67,7 +67,7 @@ public abstract class Client {
 
     private final LocationManager locationManager;
     private final ItemManager itemManager;
-    private final EventManager eventManager;
+    private final APEventManager eventManager;
 
     public static final Version protocolVersion = new Version(0, 6, 1);
 
@@ -81,6 +81,11 @@ public abstract class Client {
     private int itemsHandlingFlags = 0b000;
 
     public Client() {
+        this(new EventManager());
+    }
+
+    public Client(APEventManager eventManager)
+    {
         //Determine what platform we are on
         if(OS.startsWith("windows")){
             dataPackageLocation = windowsDataPackageCache;
@@ -94,7 +99,7 @@ public abstract class Client {
 
         UUID = dataPackage.getUUID();
 
-        eventManager = new EventManager();
+        this.eventManager = Objects.requireNonNull(eventManager);
         locationManager = new LocationManager(this);
         itemManager = new ItemManager(this);
         client = this;
@@ -541,7 +546,7 @@ public abstract class Client {
     /**
      * @return the event manager.
      */
-    public EventManager getEventManager() {
+    public APEventManager getEventManager() {
         return eventManager;
     }
 

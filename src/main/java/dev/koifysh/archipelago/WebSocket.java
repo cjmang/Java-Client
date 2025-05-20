@@ -130,7 +130,7 @@ class WebSocket extends WebSocketClient {
                         JsonElement slotData = packet.getAsJsonObject().get("slot_data");
 
                         ConnectionAttemptEvent attemptConnectionEvent = new ConnectionAttemptEvent(connectedPacket.team, connectedPacket.slot, seedName, slotData);
-                        client.getEventManager().callEvent(attemptConnectionEvent);
+                        client.getEventManager().post(attemptConnectionEvent);
 
                         if (!attemptConnectionEvent.isCanceled()) {
                             authenticated = true;
@@ -140,7 +140,7 @@ class WebSocket extends WebSocketClient {
                             client.getLocationManager().sendIfChecked(connectedPacket.missingLocations);
 
                             ConnectionResultEvent connectionResultEvent = new ConnectionResultEvent(ConnectionResult.Success, connectedPacket.team, connectedPacket.slot, seedName, slotData);
-                            client.getEventManager().callEvent(connectionResultEvent);
+                            client.getEventManager().post(connectionResultEvent);
                         } else {
                             this.close();
                             //close out of this loop because we are no longer interested in further commands from the server.
@@ -149,7 +149,7 @@ class WebSocket extends WebSocketClient {
                         break;
                     case ConnectionRefused:
                         ConnectionRefusedPacket error = gson.fromJson(cmdList.get(commandNumber), ConnectionRefusedPacket.class);
-                        client.getEventManager().callEvent(new ConnectionResultEvent(error.errors[0]));
+                        client.getEventManager().post(new ConnectionResultEvent(error.errors[0]));
                         break;
                     case DataPackage:
                         JsonElement data = packet.getAsJsonObject().get("data");
@@ -187,7 +187,7 @@ class WebSocket extends WebSocketClient {
                             print.item.playerName = client.getRoomInfo().getPlayer(client.getTeam(), print.item.playerID).alias;
                         }
 
-                        client.getEventManager().callEvent(new PrintJSONEvent(print, print.type, print.receiving, print.item));
+                        client.getEventManager().post(new PrintJSONEvent(print, print.type, print.receiving, print.item));
 
                         break;
                     case RoomUpdate:
@@ -204,7 +204,7 @@ class WebSocket extends WebSocketClient {
                         if (bounced.tags.contains("DeathLink"))
                             DeathLink.receiveDeathLink(bounced);
                         else
-                            client.getEventManager().callEvent(new BouncedEvent(bounced.games, bounced.tags, bounced.slots, bounced.data));
+                            client.getEventManager().post(new BouncedEvent(bounced.games, bounced.tags, bounced.slots, bounced.data));
                         break;
                     case LocationInfo:
                         LocationInfoPacket locations = gson.fromJson(packet, LocationInfoPacket.class);
@@ -213,19 +213,19 @@ class WebSocket extends WebSocketClient {
                             item.locationName = client.getDataPackage().getLocation(item.locationID, client.getSlotInfo().get(client.getSlot()).game);
                             item.playerName = client.getRoomInfo().getPlayer(client.getTeam(), item.playerID).alias;
                         }
-                        client.getEventManager().callEvent(new LocationInfoEvent(locations.locations));
+                        client.getEventManager().post(new LocationInfoEvent(locations.locations));
                         break;
                     case Retrieved:
                         RetrievedPacket retrievedPacket = gson.fromJson(packet, RetrievedPacket.class);
-                        client.getEventManager().callEvent(new RetrievedEvent(retrievedPacket.keys, packet.getAsJsonObject().get("keys").getAsJsonObject(), retrievedPacket.requestID));
+                        client.getEventManager().post(new RetrievedEvent(retrievedPacket.keys, packet.getAsJsonObject().get("keys").getAsJsonObject(), retrievedPacket.requestID));
                         break;
                     case SetReply:
                         SetReplyPacket setReplyPacket = gson.fromJson(packet, SetReplyPacket.class);
-                        client.getEventManager().callEvent(new SetReplyEvent(setReplyPacket.key, setReplyPacket.value, setReplyPacket.original_Value, packet.getAsJsonObject().get("value"), setReplyPacket.requestID));
+                        client.getEventManager().post(new SetReplyEvent(setReplyPacket.key, setReplyPacket.value, setReplyPacket.original_Value, packet.getAsJsonObject().get("value"), setReplyPacket.requestID));
                         break;
                     case InvalidPacket:
                         InvalidPacket invalidPacket = gson.fromJson(packet, InvalidPacket.class);
-                        client.getEventManager().callEvent(new InvalidPacketEvent(invalidPacket.type, invalidPacket.Original_cmd, invalidPacket.text));
+                        client.getEventManager().post(new InvalidPacketEvent(invalidPacket.type, invalidPacket.Original_cmd, invalidPacket.text));
                     default:
 
                 }
@@ -244,7 +244,7 @@ class WebSocket extends WebSocketClient {
         client.setHintPoints(updateRoomPacket.hintPoints);
         client.setAlias(client.getRoomInfo().getPlayer(client.getTeam(), client.getSlot()).alias);
 
-        client.getEventManager().callEvent(new CheckedLocationsEvent(updateRoomPacket.checkedLocations));
+        client.getEventManager().post(new CheckedLocationsEvent(updateRoomPacket.checkedLocations));
     }
 
 

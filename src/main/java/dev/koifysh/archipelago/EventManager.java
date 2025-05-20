@@ -6,7 +6,6 @@ import dev.koifysh.archipelago.events.Event;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Manages registering and calling events
  * @see #registerListener(Object)
  */
-public class EventManager {
+public class EventManager implements APEventManager {
 
     private final Map<Method, Object> registeredListeners = new ConcurrentHashMap<>();
 
@@ -33,6 +32,11 @@ public class EventManager {
         }
     }
 
+    @Override
+    public void register(Object sub) {
+        registerListener(sub);
+    }
+
     /**
      * Use to unregister for Events that come from the Archipelago server.
      * supplied Object must have at least 1 method annotated with {@link ArchipelagoEventListener}
@@ -48,6 +52,11 @@ public class EventManager {
         }
     }
 
+    @Override
+    public void unregister(Object sub) {
+        unRegisterListener(sub);
+    }
+
     private boolean isEventListenerMethod(Object listener, Method method) {
         if(listener instanceof Class<?>)
             if (!Modifier.isStatic(method.getModifiers()))
@@ -59,6 +68,15 @@ public class EventManager {
         if (!Event.class.isAssignableFrom(method.getParameterTypes()[0]))
             return true;
         return false;
+    }
+
+    @Override
+    public void post(Object event)
+    {
+        if(event instanceof Event)
+        {
+            callEvent((Event) event);
+        }
     }
 
     public void callEvent(final Event event) {
