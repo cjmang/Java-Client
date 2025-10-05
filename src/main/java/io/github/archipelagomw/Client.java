@@ -1,5 +1,6 @@
 package io.github.archipelagomw;
 
+import com.google.gson.JsonSyntaxException;
 import io.github.archipelagomw.bounce.BouncedManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -295,7 +296,7 @@ public abstract class Client {
                             Game game = gson.fromJson(reader, Game.class);
                             dataPackage.update(gameName, game);
                             LOGGER.info("Read datapackage for Game: ".concat(gameName).concat(" Checksum: ").concat(version.getName()));
-                        } catch (IOException e){
+                        } catch (IOException | JsonSyntaxException e){
                             LOGGER.info("Failed to read a datapackage. Starting with a new one.");
                         }
                     }
