@@ -26,6 +26,7 @@ import javax.net.ssl.SSLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 class WebSocket extends WebSocketClient {
@@ -43,7 +44,8 @@ class WebSocket extends WebSocketClient {
 
     private String seedName;
     private static Timer reconnectTimer;
-    private boolean downgrade = false;
+    private final AtomicBoolean downgrade = new AtomicBoolean();
+    private final AtomicBoolean wasDowngraded = new AtomicBoolean();
 
     private static final Draft perMessageDeflateDraft = new Draft_6455(new PerMessageDeflateExtension());
 
@@ -58,6 +60,10 @@ class WebSocket extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakeData) {
+        if(!wasDowngraded.get())
+        {
+            downgrade.set(false);
+        }
     }
 
     @Override
@@ -293,7 +299,8 @@ class WebSocket extends WebSocketClient {
             reconnectTimer.cancel();
 
             // attempt to reconnect using non-secure web socket if we are failing to connect with a secure socket.
-            if (uri.getScheme().equalsIgnoreCase("wss") && downgrade) {
+            if (uri.getScheme().equalsIgnoreCase("wss") && downgrade.get()) {
+                wasDowngraded.set(true);
                 try {
                     client.connect(new URIBuilder(uri).setScheme("ws").build());
                 } catch (URISyntaxException ignored) {
@@ -340,7 +347,7 @@ class WebSocket extends WebSocketClient {
             return;
         }
         client.onError(ex);
-        LOGGER.log(Level.WARNING, "Error in websocket connection: " + ex.getMessage());
+        LOGGER.log(Level.WARNING, "Error in websocket connection: ", ex);
         //ex.printStackTrace();
     }
 
@@ -348,7 +355,8 @@ class WebSocket extends WebSocketClient {
         super.connect();
         reconnectTimer.cancel();
         reconnectAttempt = 0;
-        this.downgrade = allowDowngrade;
+        this.downgrade.set(allowDowngrade);
+        wasDowngraded.set(false);
     }
 
     public void sendChat(String message) {

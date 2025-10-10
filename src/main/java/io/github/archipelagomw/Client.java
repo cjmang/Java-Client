@@ -530,7 +530,10 @@ public abstract class Client {
         APResult<Void> ret = ensureConnectedAndAuth();
         if(ret.getCode() == APResult.ResultCode.SUCCESS )
         {
-            locationIDs.removeIf( location -> !dataPackage.getGame(game).locationNameToId.containsValue(location));
+            locationIDs.removeIf( location -> !Optional.ofNullable(dataPackage.getGame(game))
+                    .map(g -> g.locationNameToId.containsValue(location))
+                    .orElse(false)
+            );
             webSocket.scoutLocation(locationIDs);
             ret = APResult.success();
         }
