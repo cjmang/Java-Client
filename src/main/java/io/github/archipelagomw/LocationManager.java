@@ -92,4 +92,8 @@ public class LocationManager {
         this.missingLocations.clear();
         this.missingLocations.addAll(missingLocations);
     }
+
+    public long getLocationNameFromID(String locationName){
+        return this.client.getDataPackage().getGame(this.client.getGame()).locationNameToId.get(locationName);
+    }
 }
