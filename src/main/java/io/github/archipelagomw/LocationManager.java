@@ -101,7 +101,7 @@ public class LocationManager {
      @param locationName The name of the location you wish to look up.
      @return The ID of the location that you have looked up from the datapackage.
      */
-    public long getLocationNameFromID(String locationName){
+    public Optional<Long> getLocationNameFromID(String locationName){
         return this.client.getDataPackage().getGame(this.client.getGame()).locationNameToId.get(locationName);
     }
 }
