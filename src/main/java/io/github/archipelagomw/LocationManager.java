@@ -102,6 +102,12 @@ public class LocationManager {
      @return The ID of the location that you have looked up from the datapackage.
      */
     public Optional<Long> getLocationNameFromID(String locationName){
-        return this.client.getDataPackage().getGame(this.client.getGame()).locationNameToId.get(locationName);
+        return Optional.ofNullable(
+                this.client
+                        .getDataPackage()
+                        .getGame(this.client.getGame())
+                        .locationNameToId
+                        .get(locationName)
+        );
     }
 }
