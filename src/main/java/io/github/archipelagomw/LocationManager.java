@@ -106,8 +106,10 @@ public class LocationManager {
                 this.client
                         .getDataPackage()
                         .getGame(this.client.getGame())
-                        .locationNameToId
+                 )
+                 .map(game -> game.locationNameToId
                         .get(locationName)
+                 )
         );
     }
 }
