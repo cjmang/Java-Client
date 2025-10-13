@@ -92,4 +92,23 @@ public class LocationManager {
         this.missingLocations.clear();
         this.missingLocations.addAll(missingLocations);
     }
+
+    /**
+    Helper to get the location ID from an inputted location name as a String. Only use this
+    if you know what you're dealing with, and can accept that getting this from the datapackage
+    is not 100% reliable.
+
+     @param locationName The name of the location you wish to look up.
+     @return The ID of the location that you have looked up from the datapackage.
+     */
+    public Optional<Long> getLocationNameFromID(String locationName){
+        return Optional.ofNullable(
+                this.client
+                        .getDataPackage()
+                        .getGame(this.client.getGame())
+                 )
+                 .map(game -> game.locationNameToId
+                        .get(locationName)
+                 );
+    }
 }
