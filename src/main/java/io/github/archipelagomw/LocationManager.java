@@ -109,7 +109,6 @@ public class LocationManager {
                  )
                  .map(game -> game.locationNameToId
                         .get(locationName)
-                 )
-        );
+                 );
     }
 }
