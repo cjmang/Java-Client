@@ -21,6 +21,9 @@ public class RoomUpdatePacket extends APPacket {
     @SerializedName("password")
     public boolean password;
 
+    @SerializedName("permissions")
+    public HashMap<String, Integer> permissions;
+
     @SerializedName("forfeit_mode")
     public RemainingMode.ForfeitMode forfeitMode;
 

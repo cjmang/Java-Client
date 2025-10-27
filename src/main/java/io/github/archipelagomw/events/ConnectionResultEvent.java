@@ -42,6 +42,14 @@ public class ConnectionResultEvent implements Event {
         return result;
     }
 
+    /**
+     * Getting the underlying slotdata JsonElement directly.  Use with care.
+     */
+    public JsonElement getSlotData()
+    {
+        return slot_data;
+    }
+
     public <T> T getSlotData(Class<T> classOfT) {
         Object data = new Gson().fromJson(slot_data,classOfT);
         return Primitives.wrap(classOfT).cast(data);

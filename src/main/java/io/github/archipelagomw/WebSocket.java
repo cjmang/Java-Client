@@ -241,6 +241,10 @@ class WebSocket extends WebSocketClient {
         if (!updateRoomPacket.networkPlayers.isEmpty()) {
             client.getRoomInfo().networkPlayers = updateRoomPacket.networkPlayers;
         }
+        if(updateRoomPacket.permissions != null && !updateRoomPacket.permissions.isEmpty())
+        {
+            client.getRoomInfo().permissions = updateRoomPacket.permissions;
+        }
 
         client.setHintPoints(updateRoomPacket.hintPoints);
         client.setAlias(client.getRoomInfo().getPlayer(client.getTeam(), client.getSlot()).alias);
