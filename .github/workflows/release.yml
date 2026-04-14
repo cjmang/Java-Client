@@ -19,7 +19,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
       - name: Build with Gradle
         # This just publishes to the local file system; jreleaser is responsible for uploading to maven central
         run: ./gradlew publish
