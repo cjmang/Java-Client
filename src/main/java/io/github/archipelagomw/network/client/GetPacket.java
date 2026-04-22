@@ -16,8 +16,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class GetPacket extends APPacket {
 
-    private static final AtomicInteger requestIdGen = new AtomicInteger();
-
     /**
      * a list of keys to retrieve data for.
      */

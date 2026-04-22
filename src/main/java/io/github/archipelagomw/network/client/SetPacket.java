@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SetPacket extends APPacket {
-    private static final AtomicInteger requestIdGen = new AtomicInteger(1);
     /**
      * The key to manipulate. Can never start with "_read".
      */
